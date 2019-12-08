@@ -29,6 +29,7 @@ typedef struct node{
 node_t *file_read(node_t *pnode);
 node_t *file_write(node_t *pnode);
 void list_print(node_t *pnode);
+void exit_prog(node_t *pnode);
 
 void main()
 {
@@ -38,7 +39,9 @@ void main()
 	
 	pnode = file_read(pnode);
 	list_print(pnode);
-	pnode = file_write(pnode);
+//	pnode = file_write(pnode);
+	printf("%d %s\n",pnode->item.store.year, pnode->item.name);
+	exit_prog(pnode);
 
 }
 
@@ -84,7 +87,7 @@ node_t *file_write(node_t *pnode){
 	
 	last_head = pnode;//노드의 마지막 주소를 기억
 
-	while(pnode == NULL){
+	while(pnode != NULL){
 		pnode->item.flag = fgetc(fp);
 		if(pnode->item.flag == false)//quantity
 			fprintf(fp," name:%s remain:%d store:%d.%d.%d expiry:%d.%d.%d\n",
@@ -109,7 +112,7 @@ void list_print(node_t *pnode){
 	node_t *last_head;
 	last_head = pnode;
 
-	while(pnode == NULL){
+	while(pnode != NULL){
 		printf(" name:%s remain:%s store:%d.%d.%d expiry:%d.%d.%d\n",
 			pnode->item.name, pnode->item.remain.amount, 
 			pnode->item.store.year, pnode->item.store.month, pnode->item.store.day, 
@@ -120,5 +123,11 @@ void list_print(node_t *pnode){
 	pnode = last_head;
 }
 
-
-
+void exit_prog(node_t *pnode){
+	node_t *tmp;
+	while(pnode != NULL){
+		tmp = pnode;
+		pnode = pnode->next;
+		free(tmp);
+	}
+}
