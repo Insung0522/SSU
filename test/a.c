@@ -11,7 +11,7 @@ typedef struct date{
 }date;
 
 typedef struct food{
-	enum flags flag;
+	int flag;
 	char name[30];
 	union {
 		int quantity;
@@ -39,8 +39,7 @@ void main()
 	
 	pnode = file_read(pnode);
 	list_print(pnode);
-//	pnode = file_write(pnode);
-	printf("%d %s\n",pnode->item.store.year, pnode->item.name);
+	pnode = file_write(pnode);
 	exit_prog(pnode);
 
 }
@@ -57,7 +56,7 @@ node_t *file_read(node_t *pnode){
 	while(!feof(fp)){
 		pnode = (node_t*)malloc(sizeof(node_t));
 	
-		pnode->item.flag = fgetc(fp);
+		fscanf(fp,"%d", &pnode->item.flag);
 		if(pnode->item.flag == false)//quantity
 			fscanf(fp," name:%s remain:%d store:%d.%d.%d expiry:%d.%d.%d\n",
 				pnode->item.name, &pnode->item.remain.quantity, 
@@ -84,19 +83,17 @@ node_t *file_write(node_t *pnode){
 		printf("Failed to open file for write\n");
 		return pnode;
 	}
-	
 	last_head = pnode;//노드의 마지막 주소를 기억
 
 	while(pnode != NULL){
-		pnode->item.flag = fgetc(fp);
 		if(pnode->item.flag == false)//quantity
-			fprintf(fp," name:%s remain:%d store:%d.%d.%d expiry:%d.%d.%d\n",
-				pnode->item.name, pnode->item.remain.quantity, 
+			fprintf(fp,"%d name:%s remain:%d store:%d.%d.%d expiry:%d.%d.%d\n",
+				pnode->item.flag, pnode->item.name, pnode->item.remain.quantity, 
 				pnode->item.store.year, pnode->item.store.month, pnode->item.store.day, 
 				pnode->item.expiry.year, pnode->item.expiry.month, pnode->item.expiry.day);
 		else//amount
-			fprintf(fp," name:%s remain:%s store:%d.%d.%d expiry:%d.%d.%d\n",
-				pnode->item.name, pnode->item.remain.amount, 
+			fprintf(fp,"%d name:%s remain:%s store:%d.%d.%d expiry:%d.%d.%d\n",
+				pnode->item.flag, pnode->item.name, pnode->item.remain.amount, 
 				pnode->item.store.year, pnode->item.store.month, pnode->item.store.day, 
 				pnode->item.expiry.year, pnode->item.expiry.month, pnode->item.expiry.day);
 
