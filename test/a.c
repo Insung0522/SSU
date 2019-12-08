@@ -26,8 +26,8 @@ typedef struct node{
 	struct node *next;
 }node_t;
 
-int file_read(node_t *pnode);
-int file_write(node_t *pnode);
+node_t *file_read(node_t *pnode);
+node_t *file_write(node_t *pnode);
 void list_print(node_t *pnode);
 
 void main()
@@ -36,19 +36,19 @@ void main()
 
 	node_t *pnode;
 	
-	err_flag = file_read(pnode);
+	pnode = file_read(pnode);
 	list_print(pnode);
-	err_flag = file_write(pnode);
+	pnode = file_write(pnode);
 
 }
 
-int file_read(node_t *pnode){
+node_t *file_read(node_t *pnode){
 	FILE *fp = fopen("food.dat", "r");
 	node_t *next_head = NULL;
 
 	if(fp == NULL){
 		printf("Failed to open file for read\n");
-		return true;
+		return pnode;
 	}
 	
 	while(!feof(fp)){
@@ -70,16 +70,16 @@ int file_read(node_t *pnode){
 		next_head = pnode;
 	}
 	fclose(fp);
-	return false;
+	return pnode;
 }
 
-int file_write(node_t *pnode){
+node_t *file_write(node_t *pnode){
 	FILE *fp = fopen("food.dat", "w");
 	node_t *last_head;
 
 	if(fp == NULL){
 		printf("Failed to open file for write\n");
-		return true;
+		return pnode;
 	}
 	
 	last_head = pnode;//노드의 마지막 주소를 기억
@@ -102,7 +102,7 @@ int file_write(node_t *pnode){
 	pnode = last_head;
 	
 	fclose(fp);
-	return false;
+	return pnode;
 }
 
 void list_print(node_t *pnode){
